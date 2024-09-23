@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    
+    }
+    .invoice-form, .invoice-box {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .invoice-form h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .form-group button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+    table,th{
+      
+      border:1px solid black;
+      border-collapse: collapse;
+      
+    }
+   
+td{
+  border-left:1px solid black;
+  border-right:1px solid black;
+}
+
+
+    
+    
+    .hidden {
+      display: none;
+    }
+    thead,tbody{
+      text-align: left;
+      vertical-align: top;
+    }
+    .flex-container{
+      display: flex;
+  align-items: flex-end; /* Align items to the bottom of the flex container */
+  padding: 20px;
+  margin-left: 50px;
+
+    }
+    .flex-container img {
+      max-width: 200px; /* Controls the image size */
+      height: auto;
+      padding-left: 20px;
+      padding-right: 20px;
+     
+
+    }
+    .font-size{
+      font-size: 10px;
+      text-align: center;
+      padding-left:20px ;
+    }
+    .left-aside {
+      width: 45%;
+      padding-left: 15px;
+      margin-left: 5px;
+      float: left;
+      font-size: 10px;
+
+     
+    }
+    .right-aside {
+      width: 30%;
+      padding-left: 15px;
+      margin-left:10px;
+      float: right;
+      font-size: 10px;
+    }
+  </style>
+  <script src="script.js">
+  </script>
+</head>
+<body>
+
+  <!-- Form Section -->
+  <div class="invoice-form">
+    <h2>Invoice Form</h2>
+    <div class="form-group">
+      <label for="awb">AWB No.<span>*</span></label>
+      <input type="text" id="awb" placeholder="Enter AWB No." required>
+    </div>
+    <div class="form-group">
+      <label for="consignee">Consignee<span>*</span></label>
+      <input type="text" id="consignee" placeholder="Enter Consignee" required>
+    </div>
+    <div class="form-group">
+      <label for="destination">Destination<span>*</span></label>
+      <input type="text" id="destination" placeholder="Enter Destination" required>
+    </div>
+    <div class="form-group">
+      <label for="ds">D/S<span>*</span></label>
+      <input type="text" id="ds" placeholder="Enter D/S" required>
+    </div>
+    <div class="form-group">
+      <label for="pcs">Pcs<span>*</span></label>
+      <input type="number" id="pcs" placeholder="Enter Pcs" required>
+    </div>
+    <div class="form-group">
+      <label for="weight">Weight (Kg)<span>*</span></label>
+      <input type="number" id="weight" placeholder="Enter Weight" required>
+    </div>
+    <div class="form-group">
+      <label for="amount">Amount<span>*</span></label>
+      <input type="number" id="amount" placeholder="Enter Amount" required>
+    </div>
+    <div class="form-group">
+      <label for="covid-charge">COVID Charge (%)</label>
+      <input type="number" id="covid-charge" placeholder="Enter COVID Charge">
+    </div>
+    <div class="form-group">
+      <label for="fuel-charge">Fuel Charge (%)</label>
+      <input type="number" id="fuel-charge" placeholder="Enter Fuel Charge">
+    </div>
+    <div class="form-group">
+      <button type="submit" onclick="generateInvoice()">Generate Invoice</button>
+    </div>
+  </div>
+
+  <!-- Invoice Section (Initially Hidden) -->
+  <div class="invoice-box hidden" id="invoicePage">
+    <h4 style="text-align:center">Tax Invoice</h4>
+    <div class="flex-container">
+      <div>
+        <img src="logo.jpg" style="float:bottom;"/>
+      </div>
+      <div class="font-size">
+        
+        <h3>HPL Logistics Pvt.Ltd.</h3>
+        <p>25-B,Dhanyan singh Complex.Opp.Bus Stand,LUDHINA</p>
+        <p>Tel:93987 93215,79967 89865</p>
+        <p>GST No.:03AADCH1392Q1ZC,PAN No.:AADCH1392Q</p>
+        <p>Email id:hpllogistics.cs@gmail.com,Website:www.hpllogistics.in</p>
+      </div>
+    </div>
+    <hr style="color:black; width:100%"/>
+    <aside class="left-aside">
+    
+        <strong>SUJITH ENTERPRISES</strong><BR>
+        JALANDHAR CANTT HEAD OFFICE,SUJITH S/O EERU,
+        OLD PHAGWARA ROAD,DEEP NAGAR,JALANDHAR
+        JALANDHAR PUNJAB-144005
+        PH:799503767<br>
+        STATE: TELANGANA
+        GST No:03DDOPM9654Q1ZJ
+        Place of supply: telangana
+
+      
+    </aside>
+    <aside class="right-aside">
+        <strong> A/C Code:     H655 <br>
+         Invoice No.: HPLC/24-25/9478<br>
+         Invoice Date:<span id="invoice-date"></span><br>
+         Date Range: 1/01/2024 TO <span id="date-1" ></span><br>
+         HSN/SAC:  996812
+</strong>
+    </aside>
+    
+    <table id="invoiceTable" style="width:100%; height: 500px;">
+     <thead>
+       <tr class="heading">
+        <th>AWB No</th>
+        <th>Date</th>
+        <th>Destination</th>
+        <th>D/S</th>
+        <th>Pcs</th>
+        <th>Weight (Kg)</th>
+        <th>Amount</th>
+        <th>COVID Charge</th>
+        <th>Fuel Charge</th>
+        <th>Grand Total</th>
+      </tr>
+      </thead>
+      <tbody>
+        <!--here data will be added-->
+      </tbody>
+      <tfoot style="text-align:right; border-top:1px solid black">
+      <tr >
+        <td colspan="7" id="total-amount">1</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      </tfoot>
+    </table>
+    
+  </div>
+
+  
+
+</body>
+</html>

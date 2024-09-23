@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .invoice-form, .invoice-box {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .invoice-form h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: bold;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .form-group button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      line-height: 24px;
+      text-align: left;
+      border-collapse: collapse;
+    }
+    table td {
+      padding: 5px;
+      vertical-align: top;
+    }
+    table tr.heading td {
+      background-color: #f2f2f2;
+      border-bottom: 1px solid #ddd;
+      font-weight: bold;
+    }
+    table tr.item td {
+      border-bottom: 1px solid #eee;
+    }
+    table tr.total td {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="invoice-form">
+    <h2>Invoice Form</h2>
+    <div class="form-group">
+      <label for="awb">AWB No.<span>*</span></label>
+      <input type="text" id="awb" placeholder="Enter AWB No." required>
+    </div>
+    <div class="form-group">
+      <label for="consignee">Consignee<span>*</span></label>
+      <input type="text" id="consignee" placeholder="Enter Consignee" required>
+    </div>
+    <div class="form-group">
+      <label for="destination">Destination<span>*</span></label>
+      <input type="text" id="destination" placeholder="Enter Destination" required>
+    </div>
+    <div class="form-group">
+      <label for="ds">D/S<span>*</span></label>
+      <input type="text" id="ds" placeholder="Enter D/S" required>
+    </div>
+    <div class="form-group">
+      <label for="pcs">Pcs<span>*</span></label>
+      <input type="number" id="pcs" placeholder="Enter Pcs" required>
+    </div>
+    <div class="form-group">
+      <label for="weight">Weight (Kg)<span>*</span></label>
+      <input type="number" id="weight" placeholder="Enter Weight" required>
+    </div>
+    <div class="form-group">
+      <label for="amount">Amount<span>*</span></label>
+      <input type="number" id="amount" placeholder="Enter Amount" required>
+    </div>
+    <div class="form-group">
+      <label for="covid-charge">COVID Charge (%)</label>
+      <input type="number" id="covid-charge" placeholder="Enter COVID Charge">
+    </div>
+    <div class="form-group">
+      <label for="fuel-charge">Fuel Charge (%)</label>
+      <input type="number" id="fuel-charge" placeholder="Enter Fuel Charge">
+    </div>
+    <div class="form-group">
+      <button type="button" onclick="addInvoiceRow()">Add to Invoice</button>
+    </div>
+    <div class="form-group">
+      <button type="button" onclick="generateFinalInvoice()">Generate Final Invoice</button>
+    </div>
+  </div>
+
+  <!-- Empty Invoice Table initially -->
+  <div class="invoice-box" style="display: none;">
+    <h1>Tax Invoice</h1>
+    <table id="invoiceTable">
+      <tr class="heading">
+        <td>AWB No</td>
+        <td>Date</td>
+        <td>Destination</td>
+        <td>D/S</td>
+        <td>Pcs</td>
+        <td>Weight (Kg)</td>
+        <td>Amount</td>
+        <td>COVID Charge</td>
+        <td>Fuel Charge</td>
+        <td>Grand Total</td>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    // Store all invoice rows in an array
+    let invoiceRows = [];
+
+    function addInvoiceRow() {
+      // Fetch input values
+      const awb = document.getElementById('awb').value;
+      const consignee = document.getElementById('consignee').value;
+      const destination = document.getElementById('destination').value;
+      const ds = document.getElementById('ds').value;
+      const pcs = document.getElementById('pcs').value;
+      const weight = document.getElementById('weight').value;
+      const amount = parseFloat(document.getElementById('amount').value) || 0;
+      const covidChargePercent = parseFloat(document.getElementById('covid-charge').value) || 0;
+      const fuelChargePercent = parseFloat(document.getElementById('fuel-charge').value) || 0;
+
+      // Calculate charges
+      const covidCharge = (amount * covidChargePercent) / 100;
+      const fuelCharge = (amount * fuelChargePercent) / 100;
+      const grandTotal = amount + covidCharge + fuelCharge;
+
+      // Add the new row to the array
+      const newRow = {
+        awb,
+        date: new Date().toLocaleDateString(),
+        destination,
+        ds,
+        pcs,
+        weight,
+        amount: amount.toFixed(2),
+        covidCharge: covidCharge.toFixed(2),
+        fuelCharge: fuelCharge.toFixed(2),
+        grandTotal: grandTotal.toFixed(2)
+      };
+
+      invoiceRows.push(newRow);
+
+      // Show the invoice section
+      document.querySelector('.invoice-box').style.display = 'block';
+
+      // Add the new row to the table
+      const invoiceTable = document.getElementById('invoiceTable');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${newRow.awb}</td>
+        <td>${newRow.date}</td>
+        <td>${newRow.destination}</td>
+        <td>${newRow.ds}</td>
+        <td>${newRow.pcs}</td>
+        <td>${newRow.weight}</td>
+        <td>₹${newRow.amount}</td>
+        <td>₹${newRow.covidCharge}</td>
+        <td>₹${newRow.fuelCharge}</td>
+        <td>₹${newRow.grandTotal}</td>
+      `;
+      invoiceTable.appendChild(row);
+    }
+
+    function generateFinalInvoice() {
+      // You can trigger any final process, e.g., downloading the invoice or sending it to a server.
+      document.querySelector('.invoice-form').classList.add('hidden');
+      document.getElementById('invoicePage').classList.remove('hidden');
+    }
+  </script>
+
+</body>
+</html>
